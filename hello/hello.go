@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 )
+
+const monitors = 3
+const delay = 10
 
 func main() {
 	fmt.Println("")
@@ -63,9 +67,14 @@ func startMonitoring() {
 
 	sites := []string{"https://www.caelum.com.br", "https://httpbin.org/status/500", "https://httpbin.org/status/200", "https://www.alura.com.br"}
 
-	for i, site := range sites {
-		fmt.Println("Testing site", i, ":", site)
-		monitorSite(site)
+	for i := 0; i < monitors; i++ {
+		for i, site := range sites {
+			fmt.Println("Testing site", i, ":", site)
+			monitorSite(site)
+			fmt.Println("")
+		}
+
+		time.Sleep(delay * time.Second)
 		fmt.Println("")
 	}
 
@@ -76,7 +85,7 @@ func monitorSite(site string) {
 	resp, _ := http.Get(site)
 
 	if resp.StatusCode == 200 {
-		fmt.Println("Site:", site, "loaded with success!")
+		fmt.Println("Site:", site, "loaded successfully!")
 	} else {
 		fmt.Println("Site:", site, "failed to load. Status Code:", resp.StatusCode)
 	}
