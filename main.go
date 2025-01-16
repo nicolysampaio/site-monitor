@@ -4,8 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -27,6 +29,7 @@ func main() {
 			startMonitoring()
 		case 2:
 			fmt.Println("Displaying logs...")
+			printLogs()
 		case 0:
 			fmt.Println("Exiting program...")
 			os.Exit(0)
@@ -88,13 +91,15 @@ func monitorSite(site string) {
 	resp, err := http.Get(site)
 
 	if err != nil {
-		fmt.Println("An error occured:", err)
+		fmt.Println("An error has occured:", err)
 	}
 
 	if resp.StatusCode == 200 {
 		fmt.Println("Site:", site, "loaded successfully!")
+		log(site, true)
 	} else {
 		fmt.Println("Site:", site, "failed to load. Status Code:", resp.StatusCode)
+		log(site, false)
 	}
 }
 
@@ -104,7 +109,7 @@ func readSitesFile() []string {
 	file, err := os.Open("sites.txt")
 
 	if err != nil {
-		fmt.Println("An error occured:", err)
+		fmt.Println("An error has occured:", err)
 	}
 
 	reader := bufio.NewReader(file)
@@ -122,4 +127,26 @@ func readSitesFile() []string {
 
 	file.Close()
 	return sites
+}
+
+func log(site string, status bool) {
+	file, err := os.OpenFile("log.txt", os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)
+
+	if err != nil {
+		fmt.Println("An error has occured:", err)
+	}
+
+	file.WriteString(time.Now().Format("02/01/2006 15:04:05") + " - " + site + "- online: " + strconv.FormatBool(status) + "\n")
+
+	file.Close()
+}
+
+func printLogs() {
+	file, err := ioutil.ReadFile("log.txt")
+
+	if err != nil {
+		fmt.Println("An error has occured:", err)
+	}
+
+	fmt.Println(string(file))
 }
