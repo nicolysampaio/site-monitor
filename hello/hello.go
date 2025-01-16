@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	fmt.Println("")
 	showIntroduction()
 
 	for {
@@ -35,6 +36,8 @@ func showIntroduction() {
 
 	fmt.Println("Hello, Mr/Ms.", name)
 	fmt.Println("This program is in version", version)
+
+	fmt.Println("")
 }
 
 func showMenu() {
@@ -49,12 +52,27 @@ func scanOption() int {
 
 	fmt.Println("The chosen option was", scannedOption)
 
+	fmt.Println("")
+
 	return scannedOption
 }
 
 func startMonitoring() {
 	fmt.Println("Monitoring...")
-	site := "https://httpbin.org/status/404"
+	fmt.Println("")
+
+	sites := []string{"https://www.caelum.com.br", "https://httpbin.org/status/500", "https://httpbin.org/status/200", "https://www.alura.com.br"}
+
+	for i, site := range sites {
+		fmt.Println("Testing site", i, ":", site)
+		monitorSite(site)
+		fmt.Println("")
+	}
+
+	fmt.Println("")
+}
+
+func monitorSite(site string) {
 	resp, _ := http.Get(site)
 
 	if resp.StatusCode == 200 {
