@@ -136,7 +136,7 @@ func log(site string, status bool) {
 		fmt.Println("An error has occured:", err)
 	}
 
-	file.WriteString(time.Now().Format("02/01/2006 15:04:05") + " - " + site + "- online: " + strconv.FormatBool(status) + "\n")
+	file.WriteString(time.Now().Format("02/01/2006 15:04:05") + " - " + site + " - online: " + strconv.FormatBool(status) + "\n")
 
 	file.Close()
 }
